@@ -41,5 +41,5 @@ jobs:
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: target/dx/novstar_gui/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+                  publish_dir: target/dx/bug/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
                   publish_branch: gh-pages
