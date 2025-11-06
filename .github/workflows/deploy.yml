@@ -2,7 +2,7 @@ name: 部署web
 
 on:
     push:
-        branches: ["master"] # 推送到main分支时触发
+        branches: ["main"] # 推送到main分支时触发
 
 jobs:
     build-and-deploy:
