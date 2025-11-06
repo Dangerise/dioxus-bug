@@ -1,0 +1,45 @@
+name: 部署web
+
+on:
+    push:
+        branches: ["master"] # 推送到main分支时触发
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        container:
+            image: archlinux
+        permissions:
+            contents: write # 允许写入gh-pages分支
+
+        steps:
+            - name: 检出代码
+              uses: actions/checkout@v4
+
+            - name: 安装基本环境
+              run: pacman -Syu --noconfirm && pacman -S sqlite base-devel git clang --noconfirm
+
+            - name: 安装Rust工具链
+              uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  override: true
+                  components: rustfmt, clippy
+
+            - name: 缓存Rust依赖
+              uses: Swatinem/rust-cache@v2
+              with:
+                  cache-on-failure: true
+
+            - name: 安装dioxus-cli
+              run: pacman -S dioxus-cli --noconfirm
+
+            - name: 打包 Github 版
+              run: dx bundle -r --base-path dioxus-bug
+
+            - name: 部署到 GitHub Pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: target/dx/novstar_gui/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+                  publish_branch: gh-pages
